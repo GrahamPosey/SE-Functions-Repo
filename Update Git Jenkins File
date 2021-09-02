@@ -1,0 +1,22 @@
+######Cloning Repo############# 
+copado -p 'Cloning the repository' 
+mkdir repo 
+cd repo 
+git clone "$giturl" .
+ls
+
+######SETTING GIT CREDS##########
+git config --global user.email "$gitUserEmail"
+git config --global user.name "$gitUserName"
+
+########FINDING AND REPLACING DEPLOYMENT URL############
+copado -p 'Searching for Deployment Id'
+sed -i 's#^.*app-api.copado.com.*$#sh "curl -X POST \\"https://app-api.copado.com/json/v1/webhook/deploy/'$deploymentId?'api_key='$apiKey'\\""#' Jenkinsfile
+
+############COMMIT AND PUSH UPDATED FILE TO REPO##########
+copado -p 'Commiting Source Project Repo'
+git add .
+git commit -m 'Updated Deployment Id'
+copado -p 'Pushing to Source Project Repo'
+git remote add NewOrigin $sourceRepo
+git push NewOrigin main --force
