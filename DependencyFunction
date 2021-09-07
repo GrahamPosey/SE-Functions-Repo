@@ -1,0 +1,11 @@
+#apk add jq
+copado -p 'Installing sfpowerkit' 
+(sleep 10; echo y;) | sfdx plugins:install sfpowerkit
+copado -p 'Authenticating with SFDC Org' 
+sfdx sfpowerkit:auth:login -u $name -p $password -s $security
+copado -p 'Looking for dependencies' 
+sfdx force:data:soql:query --usetoolingapi --query "Select MetadataComponentName, MetadataComponentId, MetadataComponentType FROM MetadataComponentDependency WHERE RefMetadataComponentId = '01p7X0000026RzQQAU' OR RefMetadataComponentId = '01p7X000001w7epQAA'" -u $name --json > output.txt
+echo "before cat"
+cat output.txt
+copado -p 'Processing dependencies'
+wc -l output.txt
